@@ -31,6 +31,7 @@
 #if USE_LRWAN_NS1
 #include "stdio.h"
 #include "usart.h"
+#include "lrwan_ns1_printf.h"
 #endif
 
 /* External variables --------------------------------------------------------*/
@@ -1935,6 +1936,9 @@ void Lora_fsm(void)
         /* get the embedded AppEUI */
         LoRa_GetAppID(&appEui[0]);
 
+        // On appelle les mesures des capteurs ici
+        LoraDriverCallbacks->SensorMeasureData(&SendDataBinary);
+
         /* read eeprom to see if DevEUI is already store or not store*/
         for (j = 0; j <= 7; j++)
         {
@@ -2029,7 +2033,6 @@ void Lora_fsm(void)
       /*          - relevant for USI modem                                       */
       /*          - For Murata version <= 1.3.1 not releavant cf.UM 2073         */
       /*          - relevant for WL55 modem                                      */
-
 
 #ifdef USE_I_NUCLEO_LRWAN1             /* Led on Modem slave device to indicate a Join request*/
       Master_LED_Modem_On(LED_GREEN);
@@ -2136,7 +2139,7 @@ void Lora_fsm(void)
     }
     case DEVICE_SEND:
     {
-
+ dbg_printf_send("DEVICE SEND STATE\n");
 #if defined (USE_I_NUCLEO_LRWAN1)     /*only applicable for USI LoRA modem*/
       if (SensorTimerWakeup) /*the wakeup comes from Timer*/
       {
@@ -2169,7 +2172,12 @@ void Lora_fsm(void)
 
         // 9. TODO LORA
         // call the appropriate Lora driver function to send the binary data we formatted earlier.
-        // also: check and print the return code, verbose it and compare against status AT_OK 
+        // also: check and print the return code, verbose it and compare against status AT_OK
+        //---------------------- LORA SendData ---------------------------------
+
+        Lora_SendDataBin(&SendDataBinary);
+
+        //----------------------- END LORA SendData -------------------------------
 
     
 #ifndef USE_LRWAN_NS1

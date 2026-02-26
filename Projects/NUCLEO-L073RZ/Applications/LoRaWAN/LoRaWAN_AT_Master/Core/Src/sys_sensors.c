@@ -19,6 +19,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "sys_sensors.h"
+#include "lrwan_ns1_temperature.h"
+#include "lrwan_ns1_pressure.h"
+#include "lrwan_ns1_humidity.h"
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
@@ -63,15 +66,19 @@ IKS01A2_ENV_SENSOR_Capabilities_t EnvCapabilities;
 /* USER CODE BEGIN PV */
 
 // 3. TODO LORA USE_LRWAN_NS1: instanciate handle variables for humidity, temperature and pressure
-// 3. TODO LORA USE_LRWAN_NS1: #if defined()/#endif style
 
+// 3. TODO LORA USE_LRWAN_NS1: #if defined()/#endif style
+#if defined(USE_LRWAN_NS1)
+void *TemperatureHandle = 0;
+void *HumidityHandle    = 0;
+void *PressureHandle    = 0;
+#endif
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
-
 /* Exported functions --------------------------------------------------------*/
 void EnvSensors_Read(sensor_t *sensor_data)
 {
@@ -83,6 +90,9 @@ void EnvSensors_Read(sensor_t *sensor_data)
   float PRESSURE_Value = PRESSURE_DEFAULT_VAL;
 
   // 5. TODO LORA USE_LRWAN_NS1: get values from humidity, temperature and pressure sensors
+ BSP_TEMPERATURE_Get_Temp(TemperatureHandle, &TEMPERATURE_Value);
+ BSP_PRESSURE_Get_Press(PressureHandle, &PRESSURE_Value);
+ BSP_HUMIDITY_Get_Hum(HumidityHandle, &HUMIDITY_Value);
   // 5. TODO LORA USE_LRWAN_NS1: #if defined()/#elif style (next if becomes an elif)
   // 5. TODO LORA USE_LRWAN_NS1: otherwhise they are always using the same default values (which ones?)
 #if defined (SENSOR_ENABLED) && (SENSOR_ENABLED == 1)
@@ -118,6 +128,20 @@ void  EnvSensors_Init(void)
   // 4. TODO LORA USE_LRWAN_NS1: initialize sensors
   // 4. TODO LORA USE_LRWAN_NS1: #if defined()/#elif style (next if becomes an elif)
   // 4. TODO LORA USE_LRWAN_NS1: and maybe also do something else (are they activated?)
+#if defined(USE_LRWAN_NS1)
+	//------------------------------- Init et Enable Sensors -----------------------
+	BSP_TEMPERATURE_Init(HTS221_T_0 ,&TemperatureHandle);
+	BSP_TEMPERATURE_Sensor_Enable(TemperatureHandle);
+
+	BSP_HUMIDITY_Init(HTS221_H_0 ,&HumidityHandle);
+	BSP_HUMIDITY_Sensor_Enable(HumidityHandle);
+
+	BSP_PRESSURE_Init(PRESSURE_SENSORS_AUTO ,&PressureHandle);
+	BSP_PRESSURE_Sensor_Enable(PressureHandle);
+
+	//------------------------------- END Init et Enable Sensors -----------------------
+
+#endif
 
 #if defined (SENSOR_ENABLED) && (SENSOR_ENABLED == 1)
   /* Init */

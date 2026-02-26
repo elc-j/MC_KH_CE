@@ -41,7 +41,7 @@ extern "C" {
   * @brief Temperature and pressure values are retrieved from sensors shield
   *        (instead of sending dummy values). It requires MEMS IKS shield
   */
-#define SENSOR_ENABLED  0 // YB: not ok for lrwan_ns1, see USE_LRWAN_NS1 for proper usage of sensors 
+#define SENSOR_ENABLED  0 // YB: not ok for lrwan_ns1, see USE_LRWAN_NS1 for proper usage of sensors
 
 /**
   * @brief  Verbose level for all trace logs
