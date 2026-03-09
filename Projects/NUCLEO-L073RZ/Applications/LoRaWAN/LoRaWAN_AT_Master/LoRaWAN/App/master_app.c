@@ -207,7 +207,7 @@ static void SensorMeasureData(sSendDataBinary_t *SendDataBinary)
    temperature_int = (int16_t)(Sensor.temperature * 10.0f);
    dbg_printf_send("Temperature_int = %d C\n", temperature_int);
 
-   humidity_int = (uint8_t)(Sensor.humidity * 0.5f);
+   humidity_int = (uint8_t)(Sensor.humidity * 2.0f);
    dbg_printf_send("Humidity_int = %d %\n", humidity_int);
 
    pressure_int = (uint16_t)(Sensor.pressure * 10.0f);
